@@ -1,0 +1,595 @@
+{
+  "info": {
+    "_postman_id": "b3e94a82-7f28-4831-9cb6-c3d52c1e8a91",
+    "name": "SunnyCourts Club – Court Booking Management System",
+    "description": "Postman API test collection for SunnyCourts Club backend assignment. Includes all 14 required endpoints, CRUD operations, SQLite JOIN queries, and strict status progression tests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Players APIs",
+      "item": [
+        {
+          "name": "1. Get all players",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response is an array of players', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData.length).to.be.at.least(1);",
+                  "    pm.expect(jsonData[0]).to.have.property('player_id');",
+                  "    pm.expect(jsonData[0]).to.have.property('player_name');",
+                  "    pm.expect(jsonData[0]).to.have.property('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/players",
+              "host": ["{{baseUrl}}"],
+              "path": ["players"]
+            },
+            "description": "Fetch all players registered in SunnyCourts Club."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Add a player",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Player created with valid player_id', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('message', 'Player added successfully');",
+                  "    pm.expect(jsonData.player).to.have.property('player_id');",
+                  "    pm.expect(jsonData.player.player_name).to.eql('Vikram Malhotra');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"player_name\": \"Vikram Malhotra\",\n  \"email\": \"vikram.malhotra@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/players",
+              "host": ["{{baseUrl}}"],
+              "path": ["players"]
+            },
+            "description": "Add a new player to the club database."
+          },
+          "response": []
+        },
+        {
+          "name": "Get one player",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Player object returned', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('player_id', 1);",
+                  "    pm.expect(jsonData).to.have.property('player_name');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/players/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["players", "1"]
+            },
+            "description": "Fetch a specific player by ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Courts APIs",
+      "item": [
+        {
+          "name": "3. Get all courts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Returns list of courts', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData.length).to.be.at.least(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courts",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts"]
+            },
+            "description": "Get all courts."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Get one court",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Returns court details', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('court_id', 1);",
+                  "    pm.expect(jsonData).to.have.property('court_name');",
+                  "    pm.expect(jsonData).to.have.property('sport');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courts/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts", "1"]
+            },
+            "description": "Get details of a single court by court_id."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Add a court",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Court created successfully', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('message', 'Court added successfully');",
+                  "    pm.expect(jsonData.court).to.have.property('court_id');",
+                  "    pm.expect(jsonData.court.court_name).to.eql('Sunny Olympic Swimming Pool');",
+                  "    pm.expect(jsonData.court.sport).to.eql('Swimming');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"court_name\": \"Sunny Olympic Swimming Pool\",\n  \"sport\": \"Swimming\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courts",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts"]
+            },
+            "description": "Add a new court to the facility."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update a court",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Court details updated', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('message', 'Court updated successfully');",
+                  "    pm.expect(jsonData.court.court_name).to.eql('Sunny Grand Lawn Tennis Court 1');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"court_name\": \"Sunny Grand Lawn Tennis Court 1\",\n  \"sport\": \"Tennis\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/courts/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts", "1"]
+            },
+            "description": "Update an existing court's details."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Delete a court",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Court deleted message returned', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('message', 'Court deleted successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courts/4",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts", "4"]
+            },
+            "description": "Delete a court by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Search courts by sport",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('All returned courts match sport query', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    jsonData.forEach(function(court) {",
+                  "        pm.expect(court.sport.toLowerCase()).to.eql('cricket');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/courts?sport=cricket",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts"],
+              "query": [
+                {
+                  "key": "sport",
+                  "value": "cricket"
+                }
+              ]
+            },
+            "description": "Search and filter courts by sport query parameter."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reservations APIs",
+      "item": [
+        {
+          "name": "9. Add a reservation (default status: pending)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Default status is pending', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('message', 'Reservation created successfully');",
+                  "    pm.expect(jsonData.reservation).to.have.property('status', 'pending');",
+                  "    pm.expect(jsonData.reservation).to.have.property('reservation_id');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"player_id\": 1,\n  \"court_id\": 2,\n  \"booking_date\": \"2026-11-25\",\n  \"time_slot\": \"16:00 - 17:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations"]
+            },
+            "description": "Create a new reservation. Starts automatically with 'pending' status."
+          },
+          "response": []
+        },
+        {
+          "name": "10. Get all reservations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Returns list of reservations', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData.length).to.be.at.least(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations"]
+            },
+            "description": "Fetch all reservations."
+          },
+          "response": []
+        },
+        {
+          "name": "11. Get reservation details using JOIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('JOIN returns player_name and court_name', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    pm.expect(jsonData.length).to.be.at.least(1);",
+                  "    var first = jsonData[0];",
+                  "    pm.expect(first).to.have.property('reservation_id');",
+                  "    pm.expect(first).to.have.property('player_name');",
+                  "    pm.expect(first).to.have.property('court_name');",
+                  "    pm.expect(first).to.have.property('sport');",
+                  "    pm.expect(first).to.have.property('booking_date');",
+                  "    pm.expect(first).to.have.property('time_slot');",
+                  "    pm.expect(first).to.have.property('status');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/details",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations", "details"]
+            },
+            "description": "Fetch joined reservation details displaying player name, court name, sport, date, time slot, and status."
+          },
+          "response": []
+        },
+        {
+          "name": "12. Change pending -> approved",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Status successfully transitioned to approved', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('status', 'approved');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservations/1/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations", "1", "status"]
+            },
+            "description": "Allowed transition: pending -> approved."
+          },
+          "response": []
+        },
+        {
+          "name": "13. Change approved -> done",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Status successfully transitioned to done', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('status', 'done');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"done\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservations/2/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations", "2", "status"]
+            },
+            "description": "Allowed transition: approved -> done."
+          },
+          "response": []
+        },
+        {
+          "name": "14. Test invalid status changes (verify HTTP 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message is Invalid status change', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('error', 'Invalid status change');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reservations/3/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations", "3", "status"]
+            },
+            "description": "Attempting done -> approved (invalid transition) must return HTTP 400 and error message 'Invalid status change'."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

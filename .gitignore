@@ -1,0 +1,16 @@
+# Dependency directories
+node_modules/
+
+# SQLite database temporary files
+database/*.db-journal
+database/*.db-wal
+database/*.db-shm
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment and OS files
+.DS_Store
+Thumbs.db
