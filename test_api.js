@@ -88,7 +88,18 @@ async function runAllTests() {
   const initSql = fs.readFileSync(path.join(__dirname, 'database', 'init.sql'), 'utf-8');
   await db.exec(initSql);
 
-  const server = app.listen(3000);
+  // Start server on port 3000 if not already running
+  const server = await new Promise((resolve, reject) => {
+    const s = app.listen(3000, () => resolve(s));
+    s.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        // Server already running on port 3000 (e.g. started via npm start)
+        resolve(null);
+      } else {
+        reject(err);
+      }
+    });
+  });
 
   try {
     // -------------------------------------------------------------------------
@@ -274,7 +285,7 @@ async function runAllTests() {
     console.log('======================================================\n');
 
   } finally {
-    server.close();
+    if (server) server.close();
   }
 
   if (failedCount > 0) {
